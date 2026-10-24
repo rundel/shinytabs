@@ -1,0 +1,24 @@
+Package: shinytabs
+Title: Dynamic Tabsets for 'shiny' Apps
+Version: 0.0.0.9000
+Authors@R: 
+    person("Colin", "Rundel", , "rundel@gmail.com", role = c("aut", "cre"))
+Description: A 'shiny' module for tabsets whose tabs are created and closed by
+    the user at run time. Each tab hosts an instance of a module chosen from a
+    configurable set of tab types; tabs can be added from a menu, closed with
+    an optional confirmation, reordered by dragging and renamed in place. The
+    tab list, selection and titles are also controllable from the server.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports: 
+    htmltools,
+    shiny (>= 1.7.0)
+Suggests: 
+    bslib,
+    chromote,
+    shinytest2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/rundel/shinytabs
+Config/roxygen2/version: 8.1.1
