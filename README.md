@@ -55,6 +55,8 @@ server = function(input, output, session) {
 shinyApp(ui, server)
 ```
 
+![The demo app with three tabs and the + menu open](man/figures/tabs-light.png)
+
 `ui(id, type)` receives the tab's namespaced id, like any module UI function,
 and `server(input, output, session, type)` runs under
 `shiny::moduleServer()` for that id, so `input$text` inside it is the text
@@ -68,6 +70,8 @@ tab's *handle*, which is what `can_close()` and `on_close()` receive and what
 `TRUE` to close it, `FALSE` to keep it, or a string to ask first: the string
 is shown in a modal dialog with Cancel and Close buttons. `on_close()` runs
 just before any tab is removed, for cleanup such as stopping a process.
+
+![The confirmation dialog shown when closing a tab with unsaved notes, in dark mode](man/figures/tabs-close.png)
 
 ### Controlling the tabset from the server
 
