@@ -38,7 +38,8 @@
 #' @param ui Module UI function `(id, type)` building a tab's content; see
 #'   *Tab modules*.
 #' @param server Module server function `(input, output, session, type)` for
-#'   a tab, returning its handle; `NULL` for tabs without server logic.
+#'   a tab, optionally with a fifth argument `tab`, returning the tab's
+#'   handle; `NULL` for tabs without server logic.
 #' @param types The tab types users can open, as a character vector of keys
 #'   with optional names as labels (`c("Shell" = "shell", "Editor" = "editor")`,
 #'   the convention of [shiny::selectInput()] choices), or a reactive
@@ -118,6 +119,7 @@ tabset_server = function(
   if (!is.null(can_close)) stopifnot(is.function(can_close))
   if (!is.null(on_close)) stopifnot(is.function(on_close))
   if (!shiny::is.reactive(types)) parse_types(types)
+  accepts_tab = !is.null(server) && any(c("tab", "...") %in% names(formals(server)))
 
   shiny::moduleServer(id, function(input, output, session) {
     ns = session$ns
@@ -208,9 +210,16 @@ tabset_server = function(
       if (priv$ready) insert_pane(pane) else priv$pending[[id]] = pane
 
       if (!is.null(server)) {
+        tab = tab_info(priv$tabs[[id]])
         priv$handles[[id]] = shiny::isolate(shiny::moduleServer(
           id,
-          function(input, output, session) server(input, output, session, type),
+          function(input, output, session) {
+            if (accepts_tab) {
+              server(input, output, session, type, tab = tab)
+            } else {
+              server(input, output, session, type)
+            }
+          },
           session = session
         ))
       }

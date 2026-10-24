@@ -26,7 +26,8 @@ tabset_server(
 \emph{Tab modules}.}
 
 \item{server}{Module server function \verb{(input, output, session, type)} for
-a tab, returning its handle; \code{NULL} for tabs without server logic.}
+a tab, optionally with a fifth argument \code{tab}, returning the tab's
+handle; \code{NULL} for tabs without server logic.}
 
 \item{types}{The tab types users can open, as a character vector of keys
 with optional names as labels (\code{c("Shell" = "shell", "Editor" = "editor")},

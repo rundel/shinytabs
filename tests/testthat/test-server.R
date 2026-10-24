@@ -1,11 +1,15 @@
 # A tabset whose tabs record their id and type and whose closing is governed
 # by a per-tab flag.
-test_tabset = function(..., types = c("Alpha" = "a", "Beta" = "b")) {
+test_tabset = function(
+  ...,
+  types = c("Alpha" = "a", "Beta" = "b"),
+  server = function(input, output, session, type) {
+    list(id = session$ns(NULL), type = type, busy = shiny::reactiveVal(FALSE))
+  }
+) {
   list(
     ui = function(id, type) htmltools::div(id = id, type),
-    server = function(input, output, session, type) {
-      list(id = session$ns(NULL), type = type, busy = shiny::reactiveVal(FALSE))
-    },
+    server = server,
     types = types,
     ...
   )
@@ -82,6 +86,17 @@ test_that("client events drive the tab list", {
     session$setInputs(tabset_event = list(type = "close", id = "tab1", n = 9))
     expect_equal(tabs$tabs()$id, c("tab3", "tab2"))
     expect_equal(tabs$selected(), "tab2")
+  })
+})
+
+test_that("a server declaring `tab` receives the tab's details", {
+  args = test_tabset(
+    initial = "b",
+    server = function(input, output, session, type, tab) tab
+  )
+  shiny::testServer(tabset_server, args = args, {
+    session$setInputs(tabset = list(ready = TRUE, seq = 0))
+    expect_equal(session$returned$handle("tab1"), list(id = "tab1", type = "b", title = "Beta 1"))
   })
 })
 
